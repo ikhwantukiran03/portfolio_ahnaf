@@ -95,8 +95,7 @@
 
         <!-- Main Content -->
         <div class="flex-1 ml-80 p-12">
-            
-            </div>
+            @yield('content')
         </div>
     </div>
 
