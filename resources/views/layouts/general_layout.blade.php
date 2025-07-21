@@ -105,6 +105,10 @@
                     <i class="fas fa-user text-pink-custom"></i>
                     <span class="text-gray-700">About</span>
                 </a>
+                <a href="{{ route('resume') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-file-alt text-gray-600"></i>
+                    <span class="text-gray-700">Resume</span>
+                </a>
                 @if($profile && $profile->company)
                     <a href="#company" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
                         <i class="fas fa-building text-gray-600"></i>
@@ -137,6 +141,9 @@
                 </button>
                 <a href="#about" class="hover:text-pink-custom transition-colors">
                     <i class="fas fa-user text-lg text-pink-custom"></i>
+                </a>
+                <a href="{{ route('resume') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('resume') ? 'text-pink-custom' : '' }}">
+                    <i class="fas fa-file-alt text-lg"></i>
                 </a>
                 @if($profile && $profile->company)
                     <a href="#company" class="hover:text-gray-800 transition-colors">

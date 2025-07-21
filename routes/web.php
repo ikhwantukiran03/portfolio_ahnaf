@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\ExperienceController;
 
+// Public routes
 Route::view('/', 'home')->name('home');
+Route::view('/resume', 'resume')->name('resume');
 
 // Admin routes with prefix (no auth required - for testing)
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -21,6 +24,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Services management
     Route::resource('services', ServiceController::class);
     Route::post('services/update-order', [ServiceController::class, 'updateOrder'])->name('services.updateOrder');
+
+    // Experiences management
+    Route::resource('experiences', ExperienceController::class);
+    Route::post('experiences/update-order', [ExperienceController::class, 'updateOrder'])->name('experiences.updateOrder');
 });
 
 // Regular dashboard route (no auth for now)
