@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        schema::create('profiles', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('position');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable(); // Changed from string to text
             $table->binary('image')->nullable();
-            $table->string('image_mime')->nullable();
+            $table->string('image_mime_type')->nullable(); // Fixed column name
             $table->string('image_original_name')->nullable();
             $table->timestamps();
         });

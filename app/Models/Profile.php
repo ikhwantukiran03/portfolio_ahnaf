@@ -14,7 +14,7 @@ class Profile extends Model
         'position',
         'description',
         'image',
-        'image_mime',
+        'image_mime_type', // Fixed: was 'image_mime' in original
         'image_original_name',
     ];
 

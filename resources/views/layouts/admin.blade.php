@@ -24,27 +24,12 @@
                     <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-gray-900">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
-                    <a href="{{ route('profiles.index') }}" class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-users"></i> Profiles
+                    <a href="{{ route('admin.profile.show') }}" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-user"></i> My Profile
                     </a>
-                    @auth
-                        <a href="{{ route('profile') }}" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-user"></i> Account
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-600 hover:text-gray-900">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                        <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-user-plus"></i> Register
-                        </a>
-                    @endauth
+                    <a href="{{ route('profiles.index') }}" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-users"></i> All Profiles
+                    </a>
                 </div>
             </div>
         </div>

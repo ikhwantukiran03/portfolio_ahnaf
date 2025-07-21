@@ -8,28 +8,41 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the admin's profile or show form to create one
      */
-    public function index()
+    public function show()
     {
-        $profiles = Profile::latest()->paginate(10);
-        return view('admin.profile.index', compact('profiles'));
+        $profile = Profile::first(); // Get the first (and only) profile
+        
+        if (!$profile) {
+            // If no profile exists, redirect to create
+            return redirect()->route('admin.profile.create');
+        }
+        
+        return view('admin.profile.show', compact('profile'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating the admin profile
      */
     public function create()
     {
+        // Check if profile already exists
+        if (Profile::exists()) {
+            return redirect()->route('admin.profile.show')->with('error', 'Profile already exists. You can edit it instead.');
+        }
+        
         return view('admin.profile.create');
     }
 
     /**
-     * Display the image for a profile
+     * Display the image for the admin profile
      */
-    public function showImage(Profile $profile)
+    public function showImage()
     {
-        if (!$profile->hasImage()) {
+        $profile = Profile::first();
+        
+        if (!$profile || !$profile->hasImage()) {
             abort(404);
         }
 
@@ -39,10 +52,15 @@ class ProfileController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store the newly created admin profile
      */
     public function store(Request $request)
     {
+        // Ensure only one profile can be created
+        if (Profile::exists()) {
+            return redirect()->route('admin.profile.show')->with('error', 'Profile already exists.');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
@@ -62,30 +80,34 @@ class ProfileController extends Controller
 
         Profile::create($data);
 
-        return redirect()->route('profiles.index')->with('success', 'Profile created successfully.');
+        return redirect()->route('admin.profile.show')->with('success', 'Profile created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the admin profile
      */
-    public function show(Profile $profile)
+    public function edit()
     {
-        return view('admin.profile.show', compact('profile'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Profile $profile)
-    {
+        $profile = Profile::first();
+        
+        if (!$profile) {
+            return redirect()->route('admin.profile.create');
+        }
+        
         return view('admin.profile.edit', compact('profile'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the admin profile
      */
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request)
     {
+        $profile = Profile::first();
+        
+        if (!$profile) {
+            return redirect()->route('admin.profile.create');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'position' => 'required|string|max:255',
@@ -110,16 +132,6 @@ class ProfileController extends Controller
 
         $profile->update($data);
 
-        return redirect()->route('profiles.index')->with('success', 'Profile updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Profile $profile)
-    {
-        $profile->delete();
-
-        return redirect()->route('profiles.index')->with('success', 'Profile deleted successfully.');
+        return redirect()->route('admin.profile.show')->with('success', 'Profile updated successfully.');
     }
 }
