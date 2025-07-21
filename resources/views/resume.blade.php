@@ -11,92 +11,248 @@
     </div>
 
     <!-- Work Experience -->
-    <div class="mb-16">
-        @php
-            $workExperiences = \App\Models\Experience::where('type', 'work')
-                ->where('status', 'active')
-                ->orderByDesc('start_date')
-                ->get();
-        @endphp
-
-        <div class="relative">
-            @foreach($workExperiences as $experience)
-                <div class="mb-12 relative">
-                    <!-- Timeline Line -->
-                    <div class="absolute left-0 top-0 bottom-0 w-px bg-gray-200"></div>
-
-                    <!-- Timeline Content -->
-                    <div class="relative pl-8">
+    <div class="mb-16" x-data="{ 
+        currentIndex: 0,
+        experiences: {{ json_encode($workExperiences) }},
+        isDragging: false,
+        startX: 0,
+        currentX: 0,
+        dragThreshold: 50,
+        next() {
+            this.currentIndex = (this.currentIndex + 1) % this.experiences.length;
+        },
+        prev() {
+            this.currentIndex = (this.currentIndex - 1 + this.experiences.length) % this.experiences.length;
+        },
+        setActive(index) {
+            this.currentIndex = index;
+        },
+        startDrag(e) {
+            this.isDragging = true;
+            this.startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            this.currentX = this.startX;
+        },
+        drag(e) {
+            if (!this.isDragging) return;
+            
+            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const diff = x - this.currentX;
+            this.currentX = x;
+            
+            const container = this.$refs.carousel;
+            const containerWidth = container.offsetWidth;
+            const translateX = (this.currentIndex * containerWidth * -1) + (x - this.startX);
+            container.style.transform = `translateX(${translateX}px)`;
+        },
+        endDrag(e) {
+            if (!this.isDragging) return;
+            
+            this.isDragging = false;
+            const container = this.$refs.carousel;
+            const finalX = e.type === 'mouseup' ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : this.currentX);
+            const diff = finalX - this.startX;
+            
+            if (Math.abs(diff) > this.dragThreshold) {
+                if (diff > 0 && this.currentIndex > 0) {
+                    this.prev();
+                } else if (diff < 0 && this.currentIndex < this.experiences.length - 1) {
+                    this.next();
+                }
+            }
+            
+            // Reset to proper position
+            container.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+            container.style.transition = 'transform 300ms ease-out';
+            setTimeout(() => {
+                container.style.transition = '';
+            }, 300);
+        }
+    }"
+    @mouseleave="endDrag($event)">
+        <!-- Timeline Navigation -->
+        <div class="relative mb-12">
+            <!-- Timeline Line -->
+            <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200"></div>
+            
+            <!-- Timeline Dots -->
+            <div class="relative flex justify-between max-w-2xl mx-auto px-4">
+                <template x-for="(exp, index) in experiences" :key="index">
+                    <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
+                        <!-- Current Badge -->
+                        <div x-show="exp.is_current" 
+                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full">
+                            Current
+                        </div>
+                        
                         <!-- Timeline Dot -->
-                        <div class="absolute left-0 top-0 w-2 h-2 bg-pink-custom rounded-full transform -translate-x-1/2 mt-2"></div>
-
+                        <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
+                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             >
+                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                                 x-show="currentIndex === index"></div>
+                        </div>
+                        
                         <!-- Date -->
-                        <div class="text-pink-custom font-medium mb-2">{{ $experience->date_range }}</div>
-
-                        <!-- Position -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $experience->title }}</h3>
-
-                        <!-- Company -->
-                        <div class="text-gray-600 mb-2">{{ $experience->company }}</div>
-
-                        <!-- Location -->
-                        @if($experience->location)
-                            <div class="text-gray-500 text-sm mb-3">{{ $experience->location }}</div>
-                        @endif
-
-                        <!-- Description -->
-                        <p class="text-gray-600">{{ $experience->description }}</p>
+                        <div class="mt-2 text-sm font-medium text-center" 
+                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                            <div x-text="exp.formatted_start_date"></div>
+                            <div class="text-xs text-gray-400">Present</div>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                </template>
+            </div>
+        </div>
+
+        <!-- Experience Content -->
+        <div class="relative overflow-hidden touch-pan-x">
+            <div class="flex transition-transform duration-300 ease-in-out"
+                 x-ref="carousel"
+                 :style="isDragging ? {} : { transform: `translateX(-${currentIndex * 100}%)` }"
+                 @mousedown="startDrag($event)"
+                 @mousemove="drag($event)"
+                 @mouseup="endDrag($event)"
+                 @touchstart="startDrag($event)"
+                 @touchmove="drag($event)"
+                 @touchend="endDrag($event)">
+                <template x-for="exp in experiences" :key="exp.id">
+                    <div class="w-full flex-shrink-0 px-4 select-none">
+                        <div class="bg-white rounded-2xl p-8 shadow-sm">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="exp.title"></h3>
+                            <div class="text-gray-600 mb-2" x-text="exp.company"></div>
+                            <div class="text-gray-500 text-sm mb-4" x-text="exp.location"></div>
+                            <p class="text-gray-600" x-text="exp.description"></p>
+                            <div class="mt-4 text-pink-500 font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 
-    <!-- Education -->
-    <div class="mb-16">
+    <!-- Education Section - Similar updates -->
+    @if($educationExperiences->isNotEmpty())
+    <div class="mb-16" x-data="{ 
+        currentIndex: 0,
+        experiences: {{ json_encode($educationExperiences) }},
+        isDragging: false,
+        startX: 0,
+        currentX: 0,
+        dragThreshold: 50,
+        next() {
+            this.currentIndex = (this.currentIndex + 1) % this.experiences.length;
+        },
+        prev() {
+            this.currentIndex = (this.currentIndex - 1 + this.experiences.length) % this.experiences.length;
+        },
+        setActive(index) {
+            this.currentIndex = index;
+        },
+        startDrag(e) {
+            this.isDragging = true;
+            this.startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            this.currentX = this.startX;
+        },
+        drag(e) {
+            if (!this.isDragging) return;
+            
+            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const diff = x - this.currentX;
+            this.currentX = x;
+            
+            const container = this.$refs.educationCarousel;
+            const containerWidth = container.offsetWidth;
+            const translateX = (this.currentIndex * containerWidth * -1) + (x - this.startX);
+            container.style.transform = `translateX(${translateX}px)`;
+        },
+        endDrag(e) {
+            if (!this.isDragging) return;
+            
+            this.isDragging = false;
+            const container = this.$refs.educationCarousel;
+            const finalX = e.type === 'mouseup' ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : this.currentX);
+            const diff = finalX - this.startX;
+            
+            if (Math.abs(diff) > this.dragThreshold) {
+                if (diff > 0 && this.currentIndex > 0) {
+                    this.prev();
+                } else if (diff < 0 && this.currentIndex < this.experiences.length - 1) {
+                    this.next();
+                }
+            }
+            
+            // Reset to proper position
+            container.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+            container.style.transition = 'transform 300ms ease-out';
+            setTimeout(() => {
+                container.style.transition = '';
+            }, 300);
+        }
+    }"
+    @mouseleave="endDrag($event)">
         <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-8">
             <i class="fas fa-graduation-cap mr-2"></i> EDUCATION
         </div>
 
-        @php
-            $educationExperiences = \App\Models\Experience::where('type', 'education')
-                ->where('status', 'active')
-                ->orderByDesc('start_date')
-                ->get();
-        @endphp
-
-        <div class="relative">
-            @foreach($educationExperiences as $education)
-                <div class="mb-12 relative">
-                    <!-- Timeline Line -->
-                    <div class="absolute left-0 top-0 bottom-0 w-px bg-gray-200"></div>
-
-                    <!-- Timeline Content -->
-                    <div class="relative pl-8">
+        <!-- Timeline Navigation -->
+        <div class="relative mb-12">
+            <!-- Timeline Line -->
+            <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200"></div>
+            
+            <!-- Timeline Dots -->
+            <div class="relative flex justify-between max-w-2xl mx-auto px-4">
+                <template x-for="(exp, index) in experiences" :key="index">
+                    <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
+                        <!-- Current Badge -->
+                        <div x-show="exp.is_current" 
+                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full">
+                            Current
+                        </div>
+                        
                         <!-- Timeline Dot -->
-                        <div class="absolute left-0 top-0 w-2 h-2 bg-pink-custom rounded-full transform -translate-x-1/2 mt-2"></div>
-
+                        <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
+                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             >
+                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                                 x-show="currentIndex === index"></div>
+                        </div>
+                        
                         <!-- Date -->
-                        <div class="text-pink-custom font-medium mb-2">{{ $education->date_range }}</div>
-
-                        <!-- Degree -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $education->title }}</h3>
-
-                        <!-- Institution -->
-                        <div class="text-gray-600 mb-2">{{ $education->company }}</div>
-
-                        <!-- Location -->
-                        @if($education->location)
-                            <div class="text-gray-500 text-sm mb-3">{{ $education->location }}</div>
-                        @endif
-
-                        <!-- Description -->
-                        <p class="text-gray-600">{{ $education->description }}</p>
+                        <div class="mt-2 text-sm font-medium text-center" 
+                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                            <div x-text="exp.formatted_start_date"></div>
+                            <div class="text-xs text-gray-400">Present</div>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                </template>
+            </div>
+        </div>
+
+        <!-- Experience Content -->
+        <div class="relative overflow-hidden touch-pan-x">
+            <div class="flex transition-transform duration-300 ease-in-out"
+                 x-ref="educationCarousel"
+                 :style="isDragging ? {} : { transform: `translateX(-${currentIndex * 100}%)` }"
+                 @mousedown="startDrag($event)"
+                 @mousemove="drag($event)"
+                 @mouseup="endDrag($event)"
+                 @touchstart="startDrag($event)"
+                 @touchmove="drag($event)"
+                 @touchend="endDrag($event)">
+                <template x-for="exp in experiences" :key="exp.id">
+                    <div class="w-full flex-shrink-0 px-4 select-none">
+                        <div class="bg-white rounded-2xl p-8 shadow-sm">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="exp.title"></h3>
+                            <div class="text-gray-600 mb-2" x-text="exp.company"></div>
+                            <div class="text-gray-500 text-sm mb-4" x-text="exp.location"></div>
+                            <p class="text-gray-600" x-text="exp.description"></p>
+                            <div class="mt-4 text-pink-500 font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
+    @endif
 
     <!-- Download CV Button -->
     @if($profile && $profile->cv_path)

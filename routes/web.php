@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\ResumeController;
 
 // Public routes
 Route::view('/', 'home')->name('home');
-Route::view('/resume', 'resume')->name('resume');
+Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
 
 // Admin routes with prefix (no auth required - for testing)
 Route::prefix('admin')->name('admin.')->group(function () {

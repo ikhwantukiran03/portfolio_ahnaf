@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $profile->name ?? 'Portfolio' }} - {{ $profile->position ?? 'Professional' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -101,7 +102,7 @@
             
             <!-- Navigation for Mobile -->
             <div class="space-y-4">
-                <a href="#about" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
                     <i class="fas fa-user text-pink-custom"></i>
                     <span class="text-gray-700">About</span>
                 </a>
@@ -139,7 +140,7 @@
                 <button class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-moon text-lg"></i>
                 </button>
-                <a href="#about" class="hover:text-pink-custom transition-colors">
+                <a href="{{ route('home') }}" class="hover:text-pink-custom transition-colors">
                     <i class="fas fa-user text-lg text-pink-custom"></i>
                 </a>
                 <a href="{{ route('resume') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('resume') ? 'text-pink-custom' : '' }}">
