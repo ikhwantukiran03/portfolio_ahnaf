@@ -17,10 +17,6 @@ Route::prefix('admin')->group(function () {
     Route::get('profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('profile/image', [ProfileController::class, 'showImage'])->name('admin.profile.image');
-    
-    // Keep the old profiles routes for managing multiple profiles if needed
-    Route::resource('profiles', ProfileController::class);
-    Route::get('profiles/{profile}/image', [ProfileController::class, 'showImage'])->name('profiles.image');
 });
 
 // Regular dashboard route (no auth for now)

@@ -27,9 +27,6 @@
                     <a href="{{ route('admin.profile.show') }}" class="text-gray-600 hover:text-gray-900">
                         <i class="fas fa-user"></i> My Profile
                     </a>
-                    <a href="{{ route('profiles.index') }}" class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-users"></i> All Profiles
-                    </a>
                 </div>
             </div>
         </div>

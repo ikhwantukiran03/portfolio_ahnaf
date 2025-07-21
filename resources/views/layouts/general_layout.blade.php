@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofia Ryan - Unity Game Developer & 3D Artist</title>
+    <title>{{ $profile->name ?? 'Portfolio' }} - {{ $profile->position ?? 'Professional' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -22,12 +22,18 @@
     <!-- Mobile Header -->
     <div class="lg:hidden bg-white shadow-md p-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b642?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
-                 alt="Sofia Ryan" 
-                 class="w-10 h-10 object-cover rounded-lg">
+            @if($profile && $profile->hasImage())
+                <img src="{{ route('admin.profile.image') }}" 
+                     alt="{{ $profile->name }}" 
+                     class="w-10 h-10 object-cover rounded-lg">
+            @else
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
+                </div>
+            @endif
             <div>
-                <h1 class="font-bold text-gray-800">Sofia Ryan</h1>
-                <p class="text-xs text-pink-custom">Unity Game Developer</p>
+                <h1 class="font-bold text-gray-800 text-center">{{ $profile->name ?? 'Portfolio' }}</h1>
+                <p class="text-xs text-pink-custom text-center">{{ $profile->position ?? 'Professional' }}</p>
             </div>
         </div>
         <button id="mobile-menu-btn" class="p-2 hover:bg-gray-100 rounded-lg">
@@ -47,63 +53,72 @@
             
             <!-- Profile Section for Mobile -->
             <div class="text-center mb-8">
-                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b642?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
-                     alt="Sofia Ryan" 
-                     class="w-32 h-32 object-cover rounded-2xl mx-auto mb-4">
+                @if($profile && $profile->hasImage())
+                    <img src="{{ route('admin.profile.image') }}" 
+                         alt="{{ $profile->name }}" 
+                         class="w-32 h-32 object-cover rounded-2xl mx-auto mb-4">
+                @else
+                    <div class="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-white text-4xl font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
+                    </div>
+                @endif
                 <div class="text-pink-custom text-sm font-medium mb-2 tracking-wide uppercase">
-                    GAMEPLAY PR
+                    {{ $profile->position ?? 'Professional' }}
                 </div>
-                <h1 class="text-xl font-bold text-gray-800 mb-4">Sofia Ryan</h1>
+                <h1 class="text-xl font-bold text-gray-800 mb-4">{{ $profile->name ?? 'Portfolio' }}</h1>
                 
                 <!-- Social Links -->
                 <div class="flex justify-center space-x-3 mb-6">
-                    <a href="#" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-linkedin text-sm text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-reddit text-sm text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-twitter text-sm text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-github text-sm text-gray-600"></i>
-                    </a>
+                    @if($profile && $profile->linkedin)
+                        <a href="{{ $profile->linkedin }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-linkedin text-sm text-gray-600"></i>
+                        </a>
+                    @endif
+                    @if($profile && $profile->github)
+                        <a href="{{ $profile->github }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-github text-sm text-gray-600"></i>
+                        </a>
+                    @endif
+                    @if($profile && $profile->twitter)
+                        <a href="{{ $profile->twitter }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-twitter text-sm text-gray-600"></i>
+                        </a>
+                    @endif
                 </div>
                 
                 <!-- Action Buttons -->
                 <div class="space-y-3">
-                    <button class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
-                        Download CV
-                    </button>
-                    <button class="w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                    @if($profile && $profile->cv_path)
+                        <a href="{{ $profile->cv_path }}" target="_blank" class="block w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
+                            Download CV
+                        </a>
+                    @endif
+                    <a href="#contact" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
                         Contact Me
-                    </button>
+                    </a>
                 </div>
             </div>
             
             <!-- Navigation for Mobile -->
             <div class="space-y-4">
-                <button class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="#about" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
                     <i class="fas fa-user text-pink-custom"></i>
                     <span class="text-gray-700">About</span>
-                </button>
-                <button class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
-                    <i class="fas fa-building text-gray-600"></i>
-                    <span class="text-gray-700">Company</span>
-                </button>
-                <button class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                </a>
+                @if($profile && $profile->company)
+                    <a href="#company" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-building text-gray-600"></i>
+                        <span class="text-gray-700">Company</span>
+                    </a>
+                @endif
+                <a href="#portfolio" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
                     <i class="fas fa-briefcase text-gray-600"></i>
                     <span class="text-gray-700">Portfolio</span>
-                </button>
-                <button class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
-                    <i class="fas fa-calendar text-gray-600"></i>
-                    <span class="text-gray-700">Schedule</span>
-                </button>
-                <button class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                </a>
+                <a href="#contact" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
                     <i class="fas fa-paper-plane text-gray-600"></i>
                     <span class="text-gray-700">Contact</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -120,140 +135,81 @@
                 <button class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-moon text-lg"></i>
                 </button>
-                <button class="hover:text-pink-custom transition-colors">
+                <a href="#about" class="hover:text-pink-custom transition-colors">
                     <i class="fas fa-user text-lg text-pink-custom"></i>
-                </button>
-                <button class="hover:text-gray-800 transition-colors">
-                    <i class="fas fa-building text-lg"></i>
-                </button>
-                <button class="hover:text-gray-800 transition-colors">
+                </a>
+                @if($profile && $profile->company)
+                    <a href="#company" class="hover:text-gray-800 transition-colors">
+                        <i class="fas fa-building text-lg"></i>
+                    </a>
+                @endif
+                <a href="#portfolio" class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-briefcase text-lg"></i>
-                </button>
-                <button class="hover:text-gray-800 transition-colors">
-                    <i class="fas fa-calendar text-lg"></i>
-                </button>
-                <button class="hover:text-gray-800 transition-colors">
+                </a>
+                <a href="#contact" class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-paper-plane text-lg"></i>
-                </button>
+                </a>
             </div>
 
             <!-- Profile Section -->
             <div class="flex flex-col items-center pt-20 px-8">
                 <!-- Profile Image -->
                 <div class="relative mb-6">
-                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b642?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
-                         alt="Sofia Ryan" 
-                         class="w-48 h-48 object-cover rounded-2xl">
+                    @if($profile && $profile->hasImage())
+                        <img src="{{ route('admin.profile.image') }}" 
+                             alt="{{ $profile->name }}" 
+                             class="w-48 h-48 object-cover rounded-2xl">
+                    @else
+                        <div class="w-48 h-48 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                            <span class="text-white text-6xl font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
+                        </div>
+                    @endif
                 </div>
 
-                <!-- Company Tag -->
-                <div class="text-pink-custom text-sm font-medium mb-2 tracking-wide uppercase">
-                    GAMEPLAY PR
+                <!-- Position Tag -->
+                <div class="text-pink-custom text-sm font-medium mb-2 tracking-wide uppercase text-center w-full px-4">
+                    {{ $profile->position ?? 'Professional' }}
                 </div>
 
                 <!-- Name -->
-                <h1 class="text-2xl font-bold text-gray-800 mb-8">Sofia Ryan</h1>
+                <h1 class="text-2xl font-bold text-gray-800 mb-8">{{ $profile->name ?? 'Portfolio' }}</h1>
 
                 <!-- Social Links -->
                 <div class="flex space-x-4 mb-8">
-                    <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-linkedin text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-reddit text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-twitter text-gray-600"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                        <i class="fab fa-github text-gray-600"></i>
-                    </a>
+                    @if($profile && $profile->linkedin)
+                        <a href="{{ $profile->linkedin }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-linkedin text-gray-600"></i>
+                        </a>
+                    @endif
+                    @if($profile && $profile->github)
+                        <a href="{{ $profile->github }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-github text-gray-600"></i>
+                        </a>
+                    @endif
+                    @if($profile && $profile->twitter)
+                        <a href="{{ $profile->twitter }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                            <i class="fab fa-twitter text-gray-600"></i>
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="w-full space-y-3">
-                    <button class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
-                        Download CV
-                    </button>
-                    <button class="w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                    @if($profile && $profile->cv_path)
+                        <a href="{{ $profile->cv_path }}" target="_blank" class="block w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
+                            Download CV
+                        </a>
+                    @endif
+                    <a href="#contact" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
                         Contact Me
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="flex-1 lg:ml-80 p-4 sm:p-6 lg:p-12">
-            <!-- Header -->
-            <div class="mb-8 lg:mb-12">
-                <div class="text-gray-600 mb-4 text-sm sm:text-base">
-                    Hello, I'm <span class="text-pink-custom font-semibold">Lead Game Developer</span>
-                </div>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight mb-4 lg:mb-6">
-                    Unity Game Developer and <br class="hidden sm:block">
-                    <span class="bg-pink-custom text-white px-2 sm:px-3 py-1 rounded-lg inline-block mt-2">3D Artist</span> 
-                    <span class="text-gray-800 block sm:inline">Based in California,</span><br class="hidden sm:block">
-                    <span class="text-gray-800">Los Angeles.</span>
-                </h1>
-                <p class="text-gray-600 text-base sm:text-lg leading-relaxed max-w-3xl">
-                    With over 5 years of professional experience in AAA game development, I have a proven track record in Unity, C++ proficiency, and have led the production of a mobile games. My leadership in cross-functional teams has significantly contributed to enhancing user engagement.
-                </p>
-            </div>
-
-            <!-- Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 lg:gap-16">
-                <!-- Completed Projects -->
-                <div class="text-center">
-                    <div class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-800 mb-2 stat-number">96</div>
-                    <div class="text-gray-600">
-                        <div class="font-medium">Completed</div>
-                        <div class="text-sm">Projects</div>
-                    </div>
-                </div>
-
-                <!-- Years of Experience -->
-                <div class="text-center">
-                    <div class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-800 mb-2 stat-number">8</div>
-                    <div class="text-gray-600">
-                        <div class="font-medium">Years</div>
-                        <div class="text-sm">of Experience</div>
-                    </div>
-                </div>
-
-                <!-- Awards -->
-                <div class="text-center">
-                    <div class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-800 mb-2 stat-number">10+</div>
-                    <div class="text-gray-600">
-                        <div class="font-medium">Awards</div>
-                        <div class="text-sm">Winning</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Content Section (Optional) -->
-            <div class="mt-16 lg:mt-24">
-                <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 mb-6">Featured Projects</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Project placeholders -->
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
-                        <div class="w-full h-32 bg-gradient-to-br from-pink-custom to-purple-500 rounded-lg mb-4"></div>
-                        <h3 class="font-semibold text-gray-800 mb-2">Mobile RPG Adventure</h3>
-                        <p class="text-gray-600 text-sm">Unity • C# • Cross-platform</p>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
-                        <div class="w-full h-32 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg mb-4"></div>
-                        <h3 class="font-semibold text-gray-800 mb-2">VR Experience</h3>
-                        <p class="text-gray-600 text-sm">Unity • VR • Oculus</p>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow sm:col-span-2 lg:col-span-1">
-                        <div class="w-full h-32 bg-gradient-to-br from-green-500 to-teal-500 rounded-lg mb-4"></div>
-                        <h3 class="font-semibold text-gray-800 mb-2">AR Puzzle Game</h3>
-                        <p class="text-gray-600 text-sm">Unity • ARCore • Android</p>
-                    </div>
-                </div>
-            </div>
+            @yield('content')
         </div>
     </div>
 

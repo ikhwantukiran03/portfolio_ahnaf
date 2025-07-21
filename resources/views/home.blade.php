@@ -4,7 +4,7 @@
     <!-- Header -->
     <div class="mb-12">
         <div class="text-gray-600 mb-4">
-            Hello, I'm <span class="text-pink-custom font-semibold">Lead Game Developer</span>
+            Hello, I'm <span class="text-pink-custom font-semibold">{{ $profile->position ?? 'Professional' }}</span>
         </div>
         <h1 class="text-5xl font-bold text-gray-800 leading-tight mb-6">
             Unity Game Developer and <br>
@@ -13,7 +13,7 @@
             <span class="text-gray-800">Los Angeles.</span>
         </h1>
         <p class="text-gray-600 text-lg leading-relaxed max-w-3xl">
-            With over 5 years of professional experience in AAA game development, I have a proven track record in Unity, C++ proficiency, and have led the production of a mobile games. My leadership in cross-functional teams has significantly contributed to enhancing user engagement.
+            {{ $profile->description ?? 'Your professional description will appear here.' }}
         </p>
     </div>
 
