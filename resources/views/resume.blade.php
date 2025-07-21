@@ -10,9 +10,8 @@
         <h1 class="text-3xl font-bold text-gray-800 mt-2">Work Experience & Education</h1>
     </div>
 
-    
-
     <!-- Work Experience -->
+    @if(isset($workExperiences) && $workExperiences->count() > 0)
     <div class="mb-16" x-data="{ 
         currentIndex: 0,
         experiences: {{ json_encode($workExperiences) }},
@@ -71,6 +70,8 @@
         }
     }"
     @mouseleave="endDrag($event)">
+        <h2 class="text-2xl font-bold mb-8">Work Experience</h2>
+        
         <!-- Timeline Navigation -->
         <div class="relative mb-12">
             <!-- Timeline Line -->
@@ -130,9 +131,10 @@
             </div>
         </div>
     </div>
+    @endif
 
     <!-- Education Section -->
-    @if($educationExperiences->isNotEmpty())
+    @if(isset($educationExperiences) && $educationExperiences->count() > 0)
     <div class="mb-16" x-data="{ 
         currentIndex: 0,
         experiences: {{ json_encode($educationExperiences) }},
@@ -191,6 +193,8 @@
         }
     }"
     @mouseleave="endDrag($event)">
+        <h2 class="text-2xl font-bold mb-8">Education</h2>
+        
         <!-- Timeline Navigation -->
         <div class="relative mb-12">
             <!-- Timeline Line -->
@@ -253,40 +257,139 @@
     @endif
 
     <!-- Certifications -->
-    
-    <div class="mb-16">
-    <div class="mb-12">
-        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-4">
-            <i class="fas fa-file-alt mr-2"></i> CERTIFICATIONS
+    @if(isset($certificates) && $certificates->count() > 0)
+    <div class="mb-16" x-data="{ 
+        currentIndex: 0,
+        certificates: {{ json_encode($certificates->makeHidden(['certificate_file'])) }},
+        isDragging: false,
+        startX: 0,
+        currentX: 0,
+        dragThreshold: 50,
+        next() {
+            this.currentIndex = (this.currentIndex + 1) % this.certificates.length;
+        },
+        prev() {
+            this.currentIndex = (this.currentIndex - 1 + this.certificates.length) % this.certificates.length;
+        },
+        setActive(index) {
+            this.currentIndex = index;
+        },
+        startDrag(e) {
+            this.isDragging = true;
+            this.startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            this.currentX = this.startX;
+        },
+        drag(e) {
+            if (!this.isDragging) return;
+            
+            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const diff = x - this.currentX;
+            this.currentX = x;
+            
+            const container = this.$refs.certificatesCarousel;
+            const containerWidth = container.offsetWidth;
+            const translateX = (this.currentIndex * containerWidth * -1) + (x - this.startX);
+            container.style.transform = `translateX(${translateX}px)`;
+        },
+        endDrag(e) {
+            if (!this.isDragging) return;
+            
+            this.isDragging = false;
+            const container = this.$refs.certificatesCarousel;
+            const finalX = e.type === 'mouseup' ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : this.currentX);
+            const diff = finalX - this.startX;
+            
+            if (Math.abs(diff) > this.dragThreshold) {
+                if (diff > 0 && this.currentIndex > 0) {
+                    this.prev();
+                } else if (diff < 0 && this.currentIndex < this.certificates.length - 1) {
+                    this.next();
+                }
+            }
+            
+            // Reset to proper position
+            container.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+            container.style.transition = 'transform 300ms ease-out';
+            setTimeout(() => {
+                container.style.transition = '';
+            }, 300);
+        }
+    }"
+    @mouseleave="endDrag($event)">
+        <!-- Section Header -->
+        <div class="mb-12">
+            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-4">
+                <i class="fas fa-certificate mr-2"></i> CERTIFICATIONS
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mt-2">Recent Certifications Acquired</h2>
         </div>
-        <h1 class="text-3xl font-bold text-gray-800 mt-2">Recent Certifications Acquired</h1>
-    </div>
 
-       
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($certificates as $certificate)
-                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="text-sm text-gray-500 mb-2">{{ $certificate->year }}</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $certificate->title }}</h3>
-                    <div class="text-gray-600 mb-2">{{ $certificate->institution }}</div>
-                    @if($certificate->location)
-                        <div class="text-gray-500 text-sm mb-3">{{ $certificate->location }}</div>
-                    @endif
-                    <p class="text-gray-600 text-sm mb-4">{{ $certificate->description }}</p>
-                    @if($certificate->certificate_file)
-                        <a href="{{ route('admin.certificates.show-file', $certificate) }}" 
-                           class="inline-flex items-center text-gray-800 hover:text-pink-500 transition-colors"
-                           target="_blank">
-                            <span class="mr-2">CERTIFICATE</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    @endif
-                </div>
-            @endforeach
+        <!-- Timeline Navigation -->
+        <div class="relative mb-12">
+            <!-- Timeline Line -->
+            <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200"></div>
+            
+            <!-- Timeline Dots -->
+            <div class="relative flex justify-between max-w-2xl mx-auto px-4">
+                <template x-for="(cert, index) in certificates" :key="index">
+                    <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
+                        <!-- Timeline Dot -->
+                        <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
+                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             >
+                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                                 x-show="currentIndex === index"></div>
+                        </div>
+                        
+                        <!-- Year -->
+                        <div class="mt-2 text-sm font-medium text-center" 
+                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                            <div x-text="cert.year"></div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Certificates Content -->
+        <div class="relative overflow-hidden touch-pan-x">
+            <div class="flex transition-transform duration-300 ease-in-out"
+                 x-ref="certificatesCarousel"
+                 :style="isDragging ? {} : { transform: `translateX(-${currentIndex * 100}%)` }"
+                 @mousedown="startDrag($event)"
+                 @mousemove="drag($event)"
+                 @mouseup="endDrag($event)"
+                 @touchstart="startDrag($event)"
+                 @touchmove="drag($event)"
+                 @touchend="endDrag($event)">
+                <template x-for="cert in certificates" :key="cert.id">
+                    <div class="w-full flex-shrink-0 px-4 select-none">
+                        <div class="bg-white rounded-2xl p-8 shadow-sm">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="cert.title"></h3>
+                            <div class="text-gray-600 mb-2" x-text="cert.institution"></div>
+                            <div class="text-gray-500 text-sm mb-4" x-text="cert.location"></div>
+                            <p class="text-gray-600 mb-4" x-text="cert.description"></p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-pink-500 font-medium" x-text="cert.year"></div>
+                                <div x-show="cert.file_type">
+                                    <a :href="`/admin/certificates/${cert.id}/file`" 
+                                       class="inline-flex items-center text-gray-800 hover:text-pink-500 transition-colors"
+                                       target="_blank">
+                                        <span class="mr-2">VIEW CERTIFICATE</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
+    @endif
+
     <!-- Download CV Button -->
-    @if($profile && $profile->cv_path)
+    @if(isset($profile) && $profile && $profile->cv_path)
         <div class="flex justify-center">
             <a href="{{ $profile->cv_path }}" 
                target="_blank"
@@ -297,4 +400,4 @@
         </div>
     @endif
 </div>
-@endsection 
+@endsection

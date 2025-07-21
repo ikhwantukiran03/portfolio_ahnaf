@@ -58,12 +58,17 @@ class ResumeController extends Controller
             ])
             ->values();
 
+        // Get all certificates - keep as objects, don't convert to array
         $certificates = Certificate::where('status', 'active')
             ->orderByDesc('year')
             ->get();
 
         $profile = Profile::first();
 
+        // Debug: Add some logging to see what's happening
+        \Log::info('Certificates count: ' . $certificates->count());
+        \Log::info('Certificates data: ', $certificates->toArray());
+
         return view('resume', compact('workExperiences', 'educationExperiences', 'certificates', 'profile'));
     }
-} 
+}
