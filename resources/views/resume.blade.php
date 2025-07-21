@@ -10,6 +10,8 @@
         <h1 class="text-3xl font-bold text-gray-800 mt-2">Work Experience & Education</h1>
     </div>
 
+    
+
     <!-- Work Experience -->
     <div class="mb-16" x-data="{ 
         currentIndex: 0,
@@ -129,7 +131,7 @@
         </div>
     </div>
 
-    <!-- Education Section - Similar updates -->
+    <!-- Education Section -->
     @if($educationExperiences->isNotEmpty())
     <div class="mb-16" x-data="{ 
         currentIndex: 0,
@@ -189,10 +191,6 @@
         }
     }"
     @mouseleave="endDrag($event)">
-        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-8">
-            <i class="fas fa-graduation-cap mr-2"></i> EDUCATION
-        </div>
-
         <!-- Timeline Navigation -->
         <div class="relative mb-12">
             <!-- Timeline Line -->
@@ -254,6 +252,39 @@
     </div>
     @endif
 
+    <!-- Certifications -->
+    
+    <div class="mb-16">
+    <div class="mb-12">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-4">
+            <i class="fas fa-file-alt mr-2"></i> CERTIFICATIONS
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 mt-2">Recent Certifications Acquired</h1>
+    </div>
+
+       
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @foreach($certificates as $certificate)
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-sm text-gray-500 mb-2">{{ $certificate->year }}</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $certificate->title }}</h3>
+                    <div class="text-gray-600 mb-2">{{ $certificate->institution }}</div>
+                    @if($certificate->location)
+                        <div class="text-gray-500 text-sm mb-3">{{ $certificate->location }}</div>
+                    @endif
+                    <p class="text-gray-600 text-sm mb-4">{{ $certificate->description }}</p>
+                    @if($certificate->certificate_file)
+                        <a href="{{ route('admin.certificates.show-file', $certificate) }}" 
+                           class="inline-flex items-center text-gray-800 hover:text-pink-500 transition-colors"
+                           target="_blank">
+                            <span class="mr-2">CERTIFICATE</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    </div>
     <!-- Download CV Button -->
     @if($profile && $profile->cv_path)
         <div class="flex justify-center">

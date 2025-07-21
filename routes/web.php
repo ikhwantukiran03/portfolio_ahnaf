@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\ResumeController;
 
 // Public routes
@@ -29,6 +30,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Experiences management
     Route::resource('experiences', ExperienceController::class);
     Route::post('experiences/update-order', [ExperienceController::class, 'updateOrder'])->name('experiences.updateOrder');
+
+    // Certificates management
+    Route::resource('certificates', CertificateController::class);
+    Route::get('certificates/{certificate}/file', [CertificateController::class, 'showFile'])->name('certificates.show-file');
+    Route::post('certificates/update-order', [CertificateController::class, 'updateOrder'])->name('certificates.update-order');
 });
 
 // Regular dashboard route (no auth for now)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Experience;
 use App\Models\Profile;
+use App\Models\Certificate;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -24,15 +25,15 @@ class ResumeController extends Controller
                     'formatted_start_date' => $startYear,
                     'formatted_end_date' => $endYear,
                     'is_current' => !$experience->end_date,
-                    'sort_date' => $experience->end_date ?? '9999-12-31' // Use far future date for current positions
+                    'sort_date' => $experience->end_date ?? '9999-12-31'
                 ]);
             })
             ->sortBy([
-                ['is_current', 'desc'], // Present positions first
-                ['sort_date', 'desc'],  // Then by end date (most recent first)
-                ['start_date', 'desc']  // If same end date, sort by start date
+                ['is_current', 'desc'],
+                ['sort_date', 'desc'],
+                ['start_date', 'desc']
             ])
-            ->values(); // Reset array keys after sorting
+            ->values();
 
         $educationExperiences = Experience::where('type', 'education')
             ->where('status', 'active')
@@ -47,18 +48,22 @@ class ResumeController extends Controller
                     'formatted_start_date' => $startYear,
                     'formatted_end_date' => $endYear,
                     'is_current' => !$experience->end_date,
-                    'sort_date' => $experience->end_date ?? '9999-12-31' // Use far future date for current positions
+                    'sort_date' => $experience->end_date ?? '9999-12-31'
                 ]);
             })
             ->sortBy([
-                ['is_current', 'desc'], // Present positions first
-                ['sort_date', 'desc'],  // Then by end date (most recent first)
-                ['start_date', 'desc']  // If same end date, sort by start date
+                ['is_current', 'desc'],
+                ['sort_date', 'desc'],
+                ['start_date', 'desc']
             ])
-            ->values(); // Reset array keys after sorting
+            ->values();
+
+        $certificates = Certificate::where('status', 'active')
+            ->orderByDesc('year')
+            ->get();
 
         $profile = Profile::first();
 
-        return view('resume', compact('workExperiences', 'educationExperiences', 'profile'));
+        return view('resume', compact('workExperiences', 'educationExperiences', 'certificates', 'profile'));
     }
 } 
