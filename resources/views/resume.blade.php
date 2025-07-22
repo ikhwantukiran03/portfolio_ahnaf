@@ -1,18 +1,20 @@
 @extends('layouts.general_layout')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <!-- Resume Header -->
-    <div class="mb-12">
-        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-4">
-            <i class="fas fa-file-alt mr-2"></i> RESUME
+<div class="space-y-8">
+    <!-- Page Header -->
+    <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100">
+        <div class="text-center">
+            <h1 class="text-4xl lg:text-6xl font-bold text-text-primary mb-4">My Resume</h1>
+            <p class="text-text-secondary text-lg max-w-2xl mx-auto">
+                Explore my professional journey, education, and certifications that shape my expertise
+            </p>
         </div>
-        <h1 class="text-3xl font-bold text-gray-800 mt-2">Work Experience & Education</h1>
     </div>
 
     <!-- Work Experience -->
     @if(isset($workExperiences) && $workExperiences->count() > 0)
-    <div class="mb-16" x-data="{ 
+    <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100" x-data="{ 
         currentIndex: 0,
         experiences: {{ json_encode($workExperiences) }},
         isDragging: false,
@@ -70,7 +72,13 @@
         }
     }"
     @mouseleave="endDrag($event)">
-        <h2 class="text-2xl font-bold mb-8">Work Experience</h2>
+        <div class="mb-8">
+            <div class="w-16 h-16 bg-primary-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-briefcase text-primary-blue text-2xl"></i>
+            </div>
+            <h2 class="text-3xl lg:text-4xl font-bold text-text-primary mb-4 text-center">Work Experience</h2>
+            <p class="text-text-secondary text-lg text-center">My professional journey and career milestones</p>
+        </div>
         
         <!-- Timeline Navigation -->
         <div class="relative mb-12">
@@ -83,21 +91,21 @@
                     <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
                         <!-- Current Badge -->
                         <div x-show="exp.is_current" 
-                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full">
+                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary-blue text-white text-xs px-3 py-1 rounded-full">
                             Current
                         </div>
                         
                         <!-- Timeline Dot -->
                         <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
-                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             :class="currentIndex === index ? 'border-primary-blue bg-white' : 'border-gray-300 bg-gray-100'"
                              >
-                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                            <div class="w-2 h-2 bg-primary-blue rounded-full m-2.5"
                                  x-show="currentIndex === index"></div>
                         </div>
                         
                         <!-- Date -->
                         <div class="mt-2 text-sm font-medium text-center" 
-                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                             :class="currentIndex === index ? 'text-primary-blue' : 'text-gray-500'">
                             <div x-text="exp.formatted_start_date"></div>
                             <div class="text-xs text-gray-400">Present</div>
                         </div>
@@ -119,12 +127,12 @@
                  @touchend="endDrag($event)">
                 <template x-for="exp in experiences" :key="exp.id">
                     <div class="w-full flex-shrink-0 px-4 select-none">
-                        <div class="bg-white rounded-2xl p-8 shadow-sm">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="exp.title"></h3>
-                            <div class="text-gray-600 mb-2" x-text="exp.company"></div>
-                            <div class="text-gray-500 text-sm mb-4" x-text="exp.location"></div>
-                            <p class="text-gray-600" x-text="exp.description"></p>
-                            <div class="mt-4 text-pink-500 font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
+                        <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:border-primary-blue transition-all duration-200">
+                            <h3 class="text-2xl font-bold text-text-primary mb-3" x-text="exp.title"></h3>
+                            <div class="text-text-secondary mb-2" x-text="exp.company"></div>
+                            <div class="text-text-secondary text-sm mb-4" x-text="exp.location"></div>
+                            <p class="text-text-secondary mb-4" x-text="exp.description"></p>
+                            <div class="text-primary-blue font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
                         </div>
                     </div>
                 </template>
@@ -135,7 +143,7 @@
 
     <!-- Education Section -->
     @if(isset($educationExperiences) && $educationExperiences->count() > 0)
-    <div class="mb-16" x-data="{ 
+    <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100" x-data="{ 
         currentIndex: 0,
         experiences: {{ json_encode($educationExperiences) }},
         isDragging: false,
@@ -193,7 +201,13 @@
         }
     }"
     @mouseleave="endDrag($event)">
-        <h2 class="text-2xl font-bold mb-8">Education</h2>
+        <div class="mb-8">
+            <div class="w-16 h-16 bg-primary-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-primary-blue text-2xl"></i>
+            </div>
+            <h2 class="text-3xl lg:text-4xl font-bold text-text-primary mb-4 text-center">Education</h2>
+            <p class="text-text-secondary text-lg text-center">Academic background and qualifications</p>
+        </div>
         
         <!-- Timeline Navigation -->
         <div class="relative mb-12">
@@ -206,21 +220,21 @@
                     <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
                         <!-- Current Badge -->
                         <div x-show="exp.is_current" 
-                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full">
+                             class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary-blue text-white text-xs px-3 py-1 rounded-full">
                             Current
                         </div>
                         
                         <!-- Timeline Dot -->
                         <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
-                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             :class="currentIndex === index ? 'border-primary-blue bg-white' : 'border-gray-300 bg-gray-100'"
                              >
-                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                            <div class="w-2 h-2 bg-primary-blue rounded-full m-2.5"
                                  x-show="currentIndex === index"></div>
                         </div>
                         
                         <!-- Date -->
                         <div class="mt-2 text-sm font-medium text-center" 
-                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                             :class="currentIndex === index ? 'text-primary-blue' : 'text-gray-500'">
                             <div x-text="exp.formatted_start_date"></div>
                             <div class="text-xs text-gray-400">Present</div>
                         </div>
@@ -242,12 +256,12 @@
                  @touchend="endDrag($event)">
                 <template x-for="exp in experiences" :key="exp.id">
                     <div class="w-full flex-shrink-0 px-4 select-none">
-                        <div class="bg-white rounded-2xl p-8 shadow-sm">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="exp.title"></h3>
-                            <div class="text-gray-600 mb-2" x-text="exp.company"></div>
-                            <div class="text-gray-500 text-sm mb-4" x-text="exp.location"></div>
-                            <p class="text-gray-600" x-text="exp.description"></p>
-                            <div class="mt-4 text-pink-500 font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
+                        <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:border-primary-blue transition-all duration-200">
+                            <h3 class="text-2xl font-bold text-text-primary mb-3" x-text="exp.title"></h3>
+                            <div class="text-text-secondary mb-2" x-text="exp.company"></div>
+                            <div class="text-text-secondary text-sm mb-4" x-text="exp.location"></div>
+                            <p class="text-text-secondary mb-4" x-text="exp.description"></p>
+                            <div class="text-primary-blue font-medium" x-text="`${exp.formatted_start_date} - ${exp.formatted_end_date}`"></div>
                         </div>
                     </div>
                 </template>
@@ -258,7 +272,7 @@
 
     <!-- Certifications -->
     @if(isset($certificates) && $certificates->count() > 0)
-    <div class="mb-16" x-data="{ 
+    <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100" x-data="{ 
         currentIndex: 0,
         certificates: {{ json_encode($certificates->makeHidden(['certificate_file'])) }},
         isDragging: false,
@@ -316,12 +330,12 @@
         }
     }"
     @mouseleave="endDrag($event)">
-        <!-- Section Header -->
-        <div class="mb-12">
-            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mb-4">
-                <i class="fas fa-certificate mr-2"></i> CERTIFICATIONS
+        <div class="mb-8">
+            <div class="w-16 h-16 bg-primary-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-certificate text-primary-blue text-2xl"></i>
             </div>
-            <h2 class="text-3xl font-bold text-gray-800 mt-2">Recent Certifications Acquired</h2>
+            <h2 class="text-3xl lg:text-4xl font-bold text-text-primary mb-4 text-center">Certifications</h2>
+            <p class="text-text-secondary text-lg text-center">Professional certifications and achievements</p>
         </div>
 
         <!-- Timeline Navigation -->
@@ -335,15 +349,15 @@
                     <div class="flex flex-col items-center cursor-pointer relative" @click="setActive(index)">
                         <!-- Timeline Dot -->
                         <div class="w-8 h-8 rounded-full border-2 transition-all duration-300"
-                             :class="currentIndex === index ? 'border-pink-500 bg-white' : 'border-gray-300 bg-gray-100'"
+                             :class="currentIndex === index ? 'border-primary-blue bg-white' : 'border-gray-300 bg-gray-100'"
                              >
-                            <div class="w-2 h-2 bg-pink-500 rounded-full m-2.5"
+                            <div class="w-2 h-2 bg-primary-blue rounded-full m-2.5"
                                  x-show="currentIndex === index"></div>
                         </div>
                         
                         <!-- Year -->
                         <div class="mt-2 text-sm font-medium text-center" 
-                             :class="currentIndex === index ? 'text-pink-500' : 'text-gray-500'">
+                             :class="currentIndex === index ? 'text-primary-blue' : 'text-gray-500'">
                             <div x-text="cert.year"></div>
                         </div>
                     </div>
@@ -364,16 +378,16 @@
                  @touchend="endDrag($event)">
                 <template x-for="cert in certificates" :key="cert.id">
                     <div class="w-full flex-shrink-0 px-4 select-none">
-                        <div class="bg-white rounded-2xl p-8 shadow-sm">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3" x-text="cert.title"></h3>
-                            <div class="text-gray-600 mb-2" x-text="cert.institution"></div>
-                            <div class="text-gray-500 text-sm mb-4" x-text="cert.location"></div>
-                            <p class="text-gray-600 mb-4" x-text="cert.description"></p>
+                        <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:border-primary-blue transition-all duration-200">
+                            <h3 class="text-2xl font-bold text-text-primary mb-3" x-text="cert.title"></h3>
+                            <div class="text-text-secondary mb-2" x-text="cert.institution"></div>
+                            <div class="text-text-secondary text-sm mb-4" x-text="cert.location"></div>
+                            <p class="text-text-secondary mb-4" x-text="cert.description"></p>
                             <div class="flex items-center justify-between">
-                                <div class="text-pink-500 font-medium" x-text="cert.year"></div>
+                                <div class="text-primary-blue font-medium" x-text="cert.year"></div>
                                 <div x-show="cert.file_type">
                                     <a :href="`/admin/certificates/${cert.id}/file`" 
-                                       class="inline-flex items-center text-gray-800 hover:text-pink-500 transition-colors"
+                                       class="inline-flex items-center text-primary-blue hover:text-light-blue transition-colors font-medium"
                                        target="_blank">
                                         <span class="mr-2">VIEW CERTIFICATE</span>
                                         <i class="fas fa-arrow-right"></i>
@@ -388,16 +402,41 @@
     </div>
     @endif
 
-    <!-- Download CV Button -->
+    <!-- Download CV Section -->
     @if(isset($profile) && $profile && $profile->cv_path)
-        <div class="flex justify-center">
+        <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100 text-center">
+            <div class="w-16 h-16 bg-primary-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-download text-primary-blue text-2xl"></i>
+            </div>
+            <h2 class="text-3xl lg:text-4xl font-bold text-text-primary mb-4">Download My CV</h2>
+            <p class="text-text-secondary text-lg mb-8 max-w-2xl mx-auto">
+                Get a comprehensive overview of my experience, skills, and achievements in a downloadable format.
+            </p>
             <a href="{{ $profile->cv_path }}" 
                target="_blank"
-               class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
+               class="inline-flex items-center px-8 py-4 bg-primary-blue text-white font-semibold rounded-xl hover:bg-light-blue hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-lg">
                 <i class="fas fa-download mr-2"></i>
                 Download CV
             </a>
         </div>
     @endif
+
+    <!-- Call to Action -->
+    <div class="bg-card-white rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-100 text-center">
+        <h2 class="text-3xl lg:text-4xl font-bold text-text-primary mb-4">
+            Interested in My Background?
+        </h2>
+        <p class="text-text-secondary text-lg mb-8 max-w-2xl mx-auto">
+            Let's discuss how my experience and skills can contribute to your next project.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ route('contact') }}" class="inline-flex items-center px-6 py-3 bg-primary-blue text-white rounded-lg hover:bg-light-blue transition-all duration-200 font-medium">
+                Get In Touch
+            </a>
+            <a href="{{ route('portfolio') }}" class="inline-flex items-center px-6 py-3 border border-primary-blue text-primary-blue rounded-lg hover:bg-primary-blue hover:text-white transition-all duration-200 font-medium">
+                View My Work
+            </a>
+        </div>
+    </div>
 </div>
 @endsection

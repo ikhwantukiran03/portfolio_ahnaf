@@ -12,14 +12,26 @@
             theme: {
                 extend: {
                     colors: {
-                        'pink-custom': '#FF6B9D',
+                        'primary-blue': '#3B82F6',
+                        'light-blue': '#60A5FA',
+                        'bg-gray': '#F8F9FA',
+                        'bg-custom': '#d6f9ff',
+                        'card-white': '#FFFFFF',
+                        'text-primary': '#2D3748',
+                        'text-secondary': '#718096',
+                        'blue-light': '#DBEAFE',
+                        'blue-extra-light': '#EFF6FF',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-bg-custom font-sans" x-data="{ mobileMenuOpen: false }">
     @php
         // Get contact links for use throughout the layout
         $contactLinks = \App\Models\SocialContact::where('status', 'active')
@@ -29,303 +41,131 @@
             ->get();
     @endphp
 
-    <!-- Mobile Header -->
-    <div class="lg:hidden bg-white shadow-md p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            @if($profile && $profile->hasImage())
-                <img src="{{ route('admin.profile.image') }}" 
-                     alt="{{ $profile->name }}" 
-                     class="w-10 h-10 object-cover rounded-lg">
-            @else
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
+    <!-- Header Navigation -->
+    <header class="bg-card-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-text-primary">{{ $profile->name ?? 'Portfolio' }}</h1>
                 </div>
-            @endif
-            <div>
-                <h1 class="font-bold text-gray-800 text-center">{{ $profile->name ?? 'Portfolio' }}</h1>
-                <p class="text-xs text-pink-custom text-center">{{ $profile->position ?? 'Professional' }}</p>
-            </div>
-        </div>
-        <button id="mobile-menu-btn" class="p-2 hover:bg-gray-100 rounded-lg">
-            <i class="fas fa-bars text-lg text-gray-600"></i>
-        </button>
-    </div>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-        <div class="bg-white w-80 h-full p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800">Menu</h2>
-                <button id="close-menu-btn" class="p-2 hover:bg-gray-100 rounded-lg">
-                    <i class="fas fa-times text-lg text-gray-600"></i>
-                </button>
-            </div>
-            
-            <!-- Profile Section for Mobile -->
-            <div class="text-center mb-8">
-                @if($profile && $profile->hasImage())
-                    <img src="{{ route('admin.profile.image') }}" 
-                         alt="{{ $profile->name }}" 
-                         class="w-32 h-32 object-cover rounded-2xl mx-auto mb-4">
-                @else
-                    <div class="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                        <span class="text-white text-4xl font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
-                    </div>
-                @endif
-                <div class="text-pink-custom text-sm font-medium mb-2 tracking-wide uppercase">
-                    {{ $profile->position ?? 'Professional' }}
-                </div>
-                <h1 class="text-xl font-bold text-gray-800 mb-4">{{ $profile->name ?? 'Portfolio' }}</h1>
-                
-                <!-- Contact Links from Database (Mobile) -->
-                @if($contactLinks->count() > 0)
-                    <div class="flex justify-center space-x-3 mb-6">
-                        @foreach($contactLinks as $contact)
-                            @if($contact->type === 'email')
-                                <a href="mailto:{{ $contact->value }}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
-                                </a>
-                            @elseif($contact->type === 'phone')
-                                <a href="tel:{{ $contact->value }}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
-                                </a>
-                            @else
-                                <a href="{{ $contact->url }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
-                                </a>
-                            @endif
-                        @endforeach
-                    </div>
-                @else
-                    <!-- Fallback Social Links (Mobile) -->
-                    <div class="flex justify-center space-x-3 mb-6">
-                        @if($profile && $profile->linkedin)
-                            <a href="{{ $profile->linkedin }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-linkedin text-gray-600 text-sm"></i>
-                            </a>
-                        @endif
-                        @if($profile && $profile->github)
-                            <a href="{{ $profile->github }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-github text-gray-600 text-sm"></i>
-                            </a>
-                        @endif
-                        @if($profile && $profile->twitter)
-                            <a href="{{ $profile->twitter }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-twitter text-gray-600 text-sm"></i>
-                            </a>
-                        @endif
-                    </div>
-                @endif
-                
-                <!-- Action Buttons -->
-                <div class="space-y-3">
-                    @if($profile && $profile->cv_path)
-                        <a href="{{ $profile->cv_path }}" target="_blank" class="block w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
-                            Download CV
-                        </a>
-                    @endif
-                    <a href="#contact" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                        Contact Me
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{{ route('home') }}" class="text-text-primary hover:text-primary-blue font-medium transition-colors {{ request()->routeIs('home') ? 'text-primary-blue' : '' }}">Home</a>
+                    <a href="{{ route('home') }}#services" class="text-text-primary hover:text-primary-blue font-medium transition-colors">Services</a>
+                    <a href="{{ route('portfolio') }}" class="text-text-primary hover:text-primary-blue font-medium transition-colors {{ request()->routeIs('portfolio*') ? 'text-primary-blue' : '' }}">Works</a>
+                    <a href="{{ route('resume') }}" class="text-text-primary hover:text-primary-blue font-medium transition-colors {{ request()->routeIs('resume') ? 'text-primary-blue' : '' }}">Resume</a>
+                    <a href="{{ route('contact') }}" class="text-text-primary hover:text-primary-blue font-medium transition-colors {{ request()->routeIs('contact*') ? 'text-primary-blue' : '' }}">Contact</a>
+                </nav>
+
+                <!-- Hire Me Button -->
+                <div class="hidden md:block">
+                    <a href="{{ route('contact') }}" class="inline-flex items-center px-4 py-2 border border-primary-blue text-primary-blue rounded-full hover:bg-primary-blue hover:text-white transition-all duration-200 font-medium">
+                        Hire Me <i class="fas fa-arrow-right ml-2 text-sm"></i>
                     </a>
                 </div>
+
+                <!-- Mobile menu button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2">
+                    <i class="fas fa-bars text-text-primary"></i>
+                </button>
             </div>
-            
-            <!-- Navigation for Mobile -->
-            <div class="space-y-4">
-                <a href="{{ route('home') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('home') ? 'bg-gray-100' : '' }}">
-                    <i class="fas fa-user text-pink-custom"></i>
-                    <span class="text-gray-700">About</span>
-                </a>
-                <a href="{{ route('resume') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('resume') ? 'bg-gray-100' : '' }}">
-                    <i class="fas fa-file-alt text-gray-600"></i>
-                    <span class="text-gray-700">Resume</span>
-                </a>
-                <a href="{{ route('portfolio') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('portfolio') ? 'bg-gray-100' : '' }}">
-                    <i class="fas fa-briefcase text-gray-600"></i>
-                    <span class="text-gray-700">Portfolio</span>
-                </a>
-                <a href="{{ route('contact') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('contact') ? 'bg-gray-100' : '' }}">
-                    <i class="fas fa-paper-plane text-gray-600"></i>
-                    <span class="text-gray-700">Contact</span>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-card-white border-t border-gray-100">
+            <div class="px-4 py-4 space-y-2">
+                <a href="{{ route('home') }}" class="block py-2 text-text-primary hover:text-primary-blue font-medium">Home</a>
+                <a href="{{ route('home') }}#services" class="block py-2 text-text-primary hover:text-primary-blue font-medium">Services</a>
+                <a href="{{ route('portfolio') }}" class="block py-2 text-text-primary hover:text-primary-blue font-medium">Works</a>
+                <a href="{{ route('resume') }}" class="block py-2 text-text-primary hover:text-primary-blue font-medium">Resume</a>
+                <a href="{{ route('contact') }}" class="block py-2 text-text-primary hover:text-primary-blue font-medium">Contact</a>
+                <a href="{{ route('contact') }}" class="inline-flex items-center px-4 py-2 border border-primary-blue text-primary-blue rounded-full hover:bg-primary-blue hover:text-white transition-all duration-200 font-medium mt-4">
+                    Hire Me <i class="fas fa-arrow-right ml-2 text-sm"></i>
                 </a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Main Container -->
-    <div class="lg:flex min-h-screen">
-        <!-- Left Sidebar - Hidden on mobile -->
-        <div class="hidden lg:block lg:w-80 bg-white shadow-lg lg:fixed h-full">
-            <!-- Navigation Icons -->
-            <div class="absolute left-6 top-8 flex flex-col space-y-6 text-gray-600">
-                <button class="hover:text-gray-800 transition-colors">
-                    <i class="fas fa-bars text-lg"></i>
-                </button>
-                <button class="hover:text-gray-800 transition-colors">
-                    <i class="fas fa-moon text-lg"></i>
-                </button>
-                <a href="{{ route('home') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('home') ? 'text-pink-custom' : '' }}">
-                    <i class="fas fa-user text-lg"></i>
-                </a>
-                <a href="{{ route('resume') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('resume') ? 'text-pink-custom' : '' }}">
-                    <i class="fas fa-file-alt text-lg"></i>
-                </a>
-                <a href="{{ route('portfolio') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('portfolio') ? 'text-pink-custom' : '' }}">
-                    <i class="fas fa-briefcase text-lg"></i>
-                </a>
-                <a href="{{ route('contact') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('contact') ? 'text-pink-custom' : '' }}">
-                    <i class="fas fa-paper-plane text-lg"></i>
-                </a>
-            </div>
-
-            <!-- Profile Section -->
-            <div class="flex flex-col items-center pt-20 px-8">
-                <!-- Profile Image -->
-                <div class="relative mb-6">
-                    @if($profile && $profile->hasImage())
-                        <img src="{{ route('admin.profile.image') }}" 
-                             alt="{{ $profile->name }}" 
-                             class="w-48 h-48 object-cover rounded-2xl">
-                    @else
-                        <div class="w-48 h-48 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                            <span class="text-white text-6xl font-semibold">{{ $profile ? substr($profile->name, 0, 1) : 'P' }}</span>
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Sidebar -->
+            <div class="lg:col-span-4 xl:col-span-3">
+                <div class="bg-card-white rounded-2xl p-8 shadow-sm border border-gray-100 sticky top-24">
+                    <!-- Profile Image -->
+                    <div class="text-center mb-6">
+                        <div class="relative inline-block">
+                            <div class="w-48 h-48 mx-auto mb-6 relative">
+                                <!-- Dotted border decoration -->
+                                <div class="absolute inset-0 border-2 border-dashed border-gray-300 rounded-full transform rotate-12"></div>
+                                <!-- Profile image container -->
+                                <div class="relative w-full h-full bg-gradient-to-br from-primary-blue to-light-blue rounded-full flex items-center justify-center overflow-hidden">
+                                    @if($profile && $profile->hasImage())
+                                        <img src="{{ route('admin.profile.image') }}" 
+                                             alt="{{ $profile->name }}" 
+                                             class="w-full h-full object-cover">
+                                    @else
+                                        <span class="text-white text-6xl font-bold">{{ substr($profile->name ?? 'P', 0, 1) }}</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    @endif
-                </div>
-
-                <!-- Position Tag -->
-                <div class="text-pink-custom text-sm font-medium mb-2 tracking-wide uppercase text-center w-full px-4">
-                    {{ $profile->position ?? 'Professional' }}
-                </div>
-
-                <!-- Name -->
-                <h1 class="text-2xl font-bold text-gray-800 mb-8">{{ $profile->name ?? 'Portfolio' }}</h1>
-
-                <!-- Contact Links from Database -->
-                
-                @if($contactLinks->count() > 0)
-                    <div class="flex justify-center space-x-3 mb-8">
-                        @foreach($contactLinks as $contact)
-                            @if($contact->type === 'email')
-                                <a href="mailto:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
-                                </a>
-                            @elseif($contact->type === 'phone')
-                                <a href="tel:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
-                                </a>
+                        
+                        <!-- Name and Title -->
+                        <h2 class="text-2xl font-bold text-text-primary mb-2">{{ $profile->name ?? 'Professional' }}</h2>
+                        <p class="text-primary-blue font-semibold mb-6">{{ $profile->position ?? 'Professional Developer' }}</p>
+                        
+                        <!-- Social Links -->
+                        <div class="flex justify-center space-x-4 mb-6">
+                            @if($contactLinks->count() > 0)
+                                @foreach($contactLinks->take(4) as $contact)
+                                    @if($contact->type === 'email')
+                                        <a href="mailto:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                            <i class="{{ $contact->display_icon }}"></i>
+                                        </a>
+                                    @elseif($contact->type === 'phone')
+                                        <a href="tel:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                            <i class="{{ $contact->display_icon }}"></i>
+                                        </a>
+                                    @else
+                                        <a href="{{ $contact->url }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                            <i class="{{ $contact->display_icon }}"></i>
+                                        </a>
+                                    @endif
+                                @endforeach
                             @else
-                                <a href="{{ $contact->url }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
-                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
+                                <!-- Fallback social links -->
+                                <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-primary-blue hover:text-white transition-all duration-200">
+                                    <i class="fab fa-github"></i>
                                 </a>
                             @endif
-                        @endforeach
-                    </div>
-                @else
-                    <!-- Fallback Social Links -->
-                    <div class="flex justify-center space-x-3 mb-8">
-                        @if($profile && $profile->linkedin)
-                            <a href="{{ $profile->linkedin }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-linkedin text-gray-600"></i>
-                            </a>
-                        @endif
-                        @if($profile && $profile->github)
-                            <a href="{{ $profile->github }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-github text-gray-600"></i>
-                            </a>
-                        @endif
-                        @if($profile && $profile->twitter)
-                            <a href="{{ $profile->twitter }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                                <i class="fab fa-twitter text-gray-600"></i>
-                            </a>
-                        @endif
-                    </div>
-                @endif
+                        </div>
 
-                <!-- Action Buttons -->
-                <div class="w-full space-y-3">
-                    @if($profile && $profile->cv_path)
-                        <a href="{{ $profile->cv_path }}" target="_blank" class="block w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium">
-                            Download CV
+                        <!-- Contact Me Now Button -->
+                        <a href="{{ route('contact') }}" class="inline-flex items-center px-6 py-3 bg-primary-blue text-white rounded-lg hover:bg-light-blue transition-all duration-200 font-medium">
+                            <i class="fas fa-envelope mr-2"></i>
+                            Contact Me Now
                         </a>
-                    @endif
-                    <a href="{{ route('contact') }}" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                        Contact Me
-                    </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="flex-1 lg:ml-80 p-4 sm:p-6 lg:p-12">
-            @yield('content')
+            <!-- Main Content Area -->
+            <div class="lg:col-span-8 xl:col-span-9">
+                @yield('content')
+            </div>
         </div>
     </div>
-
-    <script>
-        // Mobile menu functionality
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const closeMenuBtn = document.getElementById('close-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        });
-
-        closeMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        });
-
-        // Close menu when clicking overlay
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                mobileMenu.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Desktop interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click handlers for navigation (desktop only)
-            const navButtons = document.querySelectorAll('.lg\\:block button');
-            navButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Remove active state from all buttons
-                    navButtons.forEach(btn => btn.querySelector('i').classList.remove('text-pink-custom'));
-                    // Add active state to clicked button (except for the user icon which stays pink)
-                    if (!this.querySelector('i').classList.contains('fa-user')) {
-                        this.querySelector('i').classList.add('text-pink-custom');
-                    }
-                });
-            });
-
-            // Add hover animations to stats
-            const stats = document.querySelectorAll('.stat-number');
-            stats.forEach(stat => {
-                stat.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.1)';
-                    this.style.transition = 'transform 0.3s ease';
-                    this.style.color = '#FF6B9D';
-                });
-                stat.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                    this.style.color = '#1f2937';
-                });
-            });
-
-            // Add smooth scrolling for better mobile experience
-            document.documentElement.style.scrollBehavior = 'smooth';
-        });
-
-        // Handle orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-            }, 100);
-        });
-    </script>
 </body>
 </html>

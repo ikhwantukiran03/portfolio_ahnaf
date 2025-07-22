@@ -1,106 +1,210 @@
 @extends('layouts.admin')
 
+@section('page-title', 'Experience')
+@section('page-description', 'Manage your work experience and educational background')
+
 @section('content')
-<div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Work Experience & Education</h2>
-            <a href="{{ route('admin.experiences.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-card-white rounded-2xl p-8 shadow-sm border border-gray-100">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-text-primary mb-2">Experience</h1>
+                <p class="text-text-secondary">Manage your work experience and educational background</p>
+            </div>
+            <a href="{{ route('admin.experiences.create') }}" 
+               class="inline-flex items-center px-6 py-3 bg-primary-blue text-white rounded-lg hover:bg-light-blue transition-all duration-200 font-medium">
                 <i class="fas fa-plus mr-2"></i>
                 Add New Experience
             </a>
         </div>
+    </div>
 
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
+    <!-- Work Experience Section -->
+    <div class="bg-card-white rounded-2xl p-8 shadow-sm border border-gray-100">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-primary-blue bg-opacity-10 rounded-xl flex items-center justify-center mr-4">
+                <i class="fas fa-briefcase text-primary-blue text-xl"></i>
             </div>
-        @endif
-
-        <!-- Work Experience Section -->
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-                <i class="fas fa-briefcase mr-2"></i>
-                Work Experience
-            </h3>
-            <div class="space-y-6" id="work-experiences">
-                @forelse($workExperiences as $experience)
-                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6" data-id="{{ $experience->id }}">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{ $experience->title }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $experience->company }}</p>
-                                @if($experience->location)
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">{{ $experience->location }}</p>
-                                @endif
-                                <p class="text-pink-custom font-medium text-sm mt-2">{{ $experience->date_range }}</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <a href="{{ route('admin.experiences.edit', $experience) }}" 
-                                   class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.experiences.destroy', $experience) }}" 
-                                      method="POST" 
-                                      class="inline" 
-                                      onsubmit="return confirm('Are you sure you want to delete this experience?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 dark:text-gray-300 mt-4">{{ $experience->description }}</p>
-                    </div>
-                @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-center py-4">No work experience added yet.</p>
-                @endforelse
+            <div>
+                <h2 class="text-2xl font-bold text-text-primary">Work Experience</h2>
+                <p class="text-text-secondary">Your professional career journey</p>
             </div>
         </div>
 
-        <!-- Education Section -->
-        <div>
-            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-                <i class="fas fa-graduation-cap mr-2"></i>
-                Education
-            </h3>
-            <div class="space-y-6" id="education-experiences">
-                @forelse($educationExperiences as $experience)
-                    <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6" data-id="{{ $experience->id }}">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{ $experience->title }}</h4>
-                                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $experience->company }}</p>
-                                @if($experience->location)
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">{{ $experience->location }}</p>
+        <div class="space-y-6" id="work-experiences">
+            @forelse($workExperiences as $experience)
+                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-primary-blue transition-all duration-200 group" 
+                     data-id="{{ $experience->id }}">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-xl font-bold text-text-primary group-hover:text-primary-blue transition-colors truncate">
+                                        {{ $experience->title }}
+                                    </h3>
+                                    <p class="text-text-secondary mt-1 truncate">{{ $experience->company }}</p>
+                                    @if($experience->location)
+                                        <p class="text-text-secondary text-sm mt-1 truncate">
+                                            <i class="fas fa-map-marker-alt mr-1"></i>
+                                            {{ $experience->location }}
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="flex space-x-2 ml-4 flex-shrink-0">
+                                    <a href="{{ route('admin.experiences.edit', $experience) }}" 
+                                       class="p-2 text-primary-blue hover:bg-blue-light rounded-lg transition-colors"
+                                       title="Edit Experience">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.experiences.destroy', $experience) }}" 
+                                          method="POST" 
+                                          class="inline" 
+                                          onsubmit="return confirm('Are you sure you want to delete this experience?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Delete Experience">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 bg-primary-blue bg-opacity-10 text-primary-blue text-sm font-medium rounded-full">
+                                    <i class="fas fa-calendar mr-1"></i>
+                                    {{ $experience->date_range }}
+                                </span>
+                                @if($experience->is_current)
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full ml-2">
+                                        <i class="fas fa-circle text-xs mr-1"></i>
+                                        Current
+                                    </span>
                                 @endif
-                                <p class="text-pink-custom font-medium text-sm mt-2">{{ $experience->date_range }}</p>
                             </div>
-                            <div class="flex space-x-2">
-                                <a href="{{ route('admin.experiences.edit', $experience) }}" 
-                                   class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.experiences.destroy', $experience) }}" 
-                                      method="POST" 
-                                      class="inline" 
-                                      onsubmit="return confirm('Are you sure you want to delete this experience?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            
+                            <p class="text-text-secondary leading-relaxed">{{ $experience->description }}</p>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-300 mt-4">{{ $experience->description }}</p>
                     </div>
-                @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-center py-4">No education experience added yet.</p>
-                @endforelse
+                    
+                    <div class="flex items-center justify-between text-sm text-text-secondary mt-4 pt-4 border-t border-gray-200">
+                        <span class="flex items-center">
+                            <i class="fas fa-sort mr-1"></i>
+                            Drag to reorder
+                        </span>
+                        <span>{{ $experience->updated_at->format('M d, Y') }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-briefcase text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-text-primary mb-2">No Work Experience Yet</h3>
+                    <p class="text-text-secondary mb-6">Add your professional work experience to showcase your career journey.</p>
+                    <a href="{{ route('admin.experiences.create') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-light-blue transition-all duration-200 font-medium">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Work Experience
+                    </a>
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="bg-card-white rounded-2xl p-8 shadow-sm border border-gray-100">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-primary-blue bg-opacity-10 rounded-xl flex items-center justify-center mr-4">
+                <i class="fas fa-graduation-cap text-primary-blue text-xl"></i>
             </div>
+            <div>
+                <h2 class="text-2xl font-bold text-text-primary">Education</h2>
+                <p class="text-text-secondary">Your academic background and qualifications</p>
+            </div>
+        </div>
+
+        <div class="space-y-6" id="education-experiences">
+            @forelse($educationExperiences as $experience)
+                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-primary-blue transition-all duration-200 group" 
+                     data-id="{{ $experience->id }}">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-xl font-bold text-text-primary group-hover:text-primary-blue transition-colors truncate">
+                                        {{ $experience->title }}
+                                    </h3>
+                                    <p class="text-text-secondary mt-1 truncate">{{ $experience->company }}</p>
+                                    @if($experience->location)
+                                        <p class="text-text-secondary text-sm mt-1 truncate">
+                                            <i class="fas fa-map-marker-alt mr-1"></i>
+                                            {{ $experience->location }}
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="flex space-x-2 ml-4 flex-shrink-0">
+                                    <a href="{{ route('admin.experiences.edit', $experience) }}" 
+                                       class="p-2 text-primary-blue hover:bg-blue-light rounded-lg transition-colors"
+                                       title="Edit Experience">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.experiences.destroy', $experience) }}" 
+                                          method="POST" 
+                                          class="inline" 
+                                          onsubmit="return confirm('Are you sure you want to delete this experience?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Delete Experience">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 bg-primary-blue bg-opacity-10 text-primary-blue text-sm font-medium rounded-full">
+                                    <i class="fas fa-calendar mr-1"></i>
+                                    {{ $experience->date_range }}
+                                </span>
+                                @if($experience->is_current)
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full ml-2">
+                                        <i class="fas fa-circle text-xs mr-1"></i>
+                                        Current
+                                    </span>
+                                @endif
+                            </div>
+                            
+                            <p class="text-text-secondary leading-relaxed">{{ $experience->description }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm text-text-secondary mt-4 pt-4 border-t border-gray-200">
+                        <span class="flex items-center">
+                            <i class="fas fa-sort mr-1"></i>
+                            Drag to reorder
+                        </span>
+                        <span>{{ $experience->updated_at->format('M d, Y') }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-text-primary mb-2">No Education Experience Yet</h3>
+                    <p class="text-text-secondary mb-6">Add your educational background to showcase your academic achievements.</p>
+                    <a href="{{ route('admin.experiences.create') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-light-blue transition-all duration-200 font-medium">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Education Experience
+                    </a>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -114,7 +218,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (workList) {
         new Sortable(workList, {
             animation: 150,
-            ghostClass: 'bg-gray-100',
+            ghostClass: 'opacity-50',
+            chosenClass: 'scale-105',
             onEnd: function() {
                 updateOrder('work-experiences');
             }
@@ -126,7 +231,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (educationList) {
         new Sortable(educationList, {
             animation: 150,
-            ghostClass: 'bg-gray-100',
+            ghostClass: 'opacity-50',
+            chosenClass: 'scale-105',
             onEnd: function() {
                 updateOrder('education-experiences');
             }
