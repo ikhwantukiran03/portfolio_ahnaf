@@ -5,11 +5,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\SocialContactController;
 use App\Http\Controllers\ResumeController;
 
 // Public routes
 Route::view('/', 'home')->name('home');
 Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
+
+// Public API route for social contacts
+Route::get('/api/social-contacts', [SocialContactController::class, 'getPublicContacts'])->name('api.social-contacts');
 
 // Admin routes with prefix (no auth required - for testing)
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -35,6 +39,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('certificates', CertificateController::class);
     Route::get('certificates/{certificate}/file', [CertificateController::class, 'showFile'])->name('certificates.show-file');
     Route::post('certificates/update-order', [CertificateController::class, 'updateOrder'])->name('certificates.update-order');
+
+    // Social Contacts management
+    Route::resource('social-contacts', SocialContactController::class);
+    Route::post('social-contacts/update-order', [SocialContactController::class, 'updateOrder'])->name('social-contacts.update-order');
+    Route::post('social-contacts/{socialContact}/toggle-primary', [SocialContactController::class, 'togglePrimary'])->name('social-contacts.toggle-primary');
+    Route::post('social-contacts/{socialContact}/toggle-public', [SocialContactController::class, 'togglePublic'])->name('social-contacts.toggle-public');
 });
 
 // Regular dashboard route (no auth for now)

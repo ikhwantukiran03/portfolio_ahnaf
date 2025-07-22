@@ -32,6 +32,34 @@
         </div>
     </nav>
 
+    <!-- Secondary Navigation -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex space-x-8 overflow-x-auto py-3">
+                <a href="{{ route('admin.services.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap">
+                    <i class="fas fa-cogs mr-2"></i>
+                    Services
+                </a>
+                <a href="{{ route('admin.experiences.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap">
+                    <i class="fas fa-briefcase mr-2"></i>
+                    Experience
+                </a>
+                <a href="{{ route('admin.certificates.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap">
+                    <i class="fas fa-certificate mr-2"></i>
+                    Certificates
+                </a>
+                <a href="{{ route('admin.social-contacts.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap">
+                    <i class="fas fa-address-book mr-2"></i>
+                    Social Contacts
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <!-- Flash Messages -->
@@ -49,5 +77,7 @@
 
         @yield('content')
     </div>
+
+    @stack('scripts')
 </body>
 </html>
