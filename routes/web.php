@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\ContactController;
 
 // Public routes
-Route::view('/', 'home')->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
 Route::get('/portfolio', [App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
 Route::get('/portfolio/{portfolio}/file', [App\Http\Controllers\PortfolioController::class, 'showFile'])->name('portfolio.file');

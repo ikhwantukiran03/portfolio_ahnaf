@@ -20,6 +20,15 @@
     </script>
 </head>
 <body class="bg-gray-50 font-sans">
+    @php
+        // Get contact links for use throughout the layout
+        $contactLinks = \App\Models\SocialContact::where('status', 'active')
+            ->where('is_public', true)
+            ->orderBy('sort_order')
+            ->take(4)
+            ->get();
+    @endphp
+
     <!-- Mobile Header -->
     <div class="lg:hidden bg-white shadow-md p-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
@@ -68,24 +77,45 @@
                 </div>
                 <h1 class="text-xl font-bold text-gray-800 mb-4">{{ $profile->name ?? 'Portfolio' }}</h1>
                 
-                <!-- Social Links -->
-                <div class="flex justify-center space-x-3 mb-6">
-                    @if($profile && $profile->linkedin)
-                        <a href="{{ $profile->linkedin }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-linkedin text-sm text-gray-600"></i>
-                        </a>
-                    @endif
-                    @if($profile && $profile->github)
-                        <a href="{{ $profile->github }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-github text-sm text-gray-600"></i>
-                        </a>
-                    @endif
-                    @if($profile && $profile->twitter)
-                        <a href="{{ $profile->twitter }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-twitter text-sm text-gray-600"></i>
-                        </a>
-                    @endif
-                </div>
+                <!-- Contact Links from Database (Mobile) -->
+                @if($contactLinks->count() > 0)
+                    <div class="flex justify-center space-x-3 mb-6">
+                        @foreach($contactLinks as $contact)
+                            @if($contact->type === 'email')
+                                <a href="mailto:{{ $contact->value }}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
+                                </a>
+                            @elseif($contact->type === 'phone')
+                                <a href="tel:{{ $contact->value }}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
+                                </a>
+                            @else
+                                <a href="{{ $contact->url }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600 text-sm"></i>
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                @else
+                    <!-- Fallback Social Links (Mobile) -->
+                    <div class="flex justify-center space-x-3 mb-6">
+                        @if($profile && $profile->linkedin)
+                            <a href="{{ $profile->linkedin }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-linkedin text-gray-600 text-sm"></i>
+                            </a>
+                        @endif
+                        @if($profile && $profile->github)
+                            <a href="{{ $profile->github }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-github text-gray-600 text-sm"></i>
+                            </a>
+                        @endif
+                        @if($profile && $profile->twitter)
+                            <a href="{{ $profile->twitter }}" target="_blank" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-twitter text-gray-600 text-sm"></i>
+                            </a>
+                        @endif
+                    </div>
+                @endif
                 
                 <!-- Action Buttons -->
                 <div class="space-y-3">
@@ -171,24 +201,46 @@
                 <!-- Name -->
                 <h1 class="text-2xl font-bold text-gray-800 mb-8">{{ $profile->name ?? 'Portfolio' }}</h1>
 
-                <!-- Social Links -->
-                <div class="flex space-x-4 mb-8">
-                    @if($profile && $profile->linkedin)
-                        <a href="{{ $profile->linkedin }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-linkedin text-gray-600"></i>
-                        </a>
-                    @endif
-                    @if($profile && $profile->github)
-                        <a href="{{ $profile->github }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-github text-gray-600"></i>
-                        </a>
-                    @endif
-                    @if($profile && $profile->twitter)
-                        <a href="{{ $profile->twitter }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
-                            <i class="fab fa-twitter text-gray-600"></i>
-                        </a>
-                    @endif
-                </div>
+                <!-- Contact Links from Database -->
+                
+                @if($contactLinks->count() > 0)
+                    <div class="flex justify-center space-x-3 mb-8">
+                        @foreach($contactLinks as $contact)
+                            @if($contact->type === 'email')
+                                <a href="mailto:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
+                                </a>
+                            @elseif($contact->type === 'phone')
+                                <a href="tel:{{ $contact->value }}" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
+                                </a>
+                            @else
+                                <a href="{{ $contact->url }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors" title="{{ $contact->label }}">
+                                    <i class="{{ $contact->display_icon }} text-gray-600"></i>
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                @else
+                    <!-- Fallback Social Links -->
+                    <div class="flex justify-center space-x-3 mb-8">
+                        @if($profile && $profile->linkedin)
+                            <a href="{{ $profile->linkedin }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-linkedin text-gray-600"></i>
+                            </a>
+                        @endif
+                        @if($profile && $profile->github)
+                            <a href="{{ $profile->github }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-github text-gray-600"></i>
+                            </a>
+                        @endif
+                        @if($profile && $profile->twitter)
+                            <a href="{{ $profile->twitter }}" target="_blank" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                <i class="fab fa-twitter text-gray-600"></i>
+                            </a>
+                        @endif
+                    </div>
+                @endif
 
                 <!-- Action Buttons -->
                 <div class="w-full space-y-3">
