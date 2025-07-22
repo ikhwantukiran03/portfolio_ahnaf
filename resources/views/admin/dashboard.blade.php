@@ -5,7 +5,7 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
     <!-- Statistics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
         <!-- Total Services -->
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
@@ -63,6 +63,25 @@
             </div>
         </div>
 
+        <!-- Total Portfolios -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-folder-open text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Portfolios</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                            {{ \App\Models\Portfolio::count() }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Social Contacts -->
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
@@ -84,7 +103,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
         <a href="{{ route('admin.services.create') }}" 
            class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
@@ -112,6 +131,15 @@
             <p class="text-sm text-gray-600">Upload a new certification or achievement.</p>
         </a>
 
+        <a href="{{ route('admin.portfolios.create') }}" 
+           class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-plus text-purple-600"></i>
+            </div>
+            <h3 class="font-semibold text-gray-800 mb-2">Add New Portfolio</h3>
+            <p class="text-sm text-gray-600">Add a new portfolio item to showcase your work.</p>
+        </a>
+
         <a href="{{ route('admin.social-contacts.create') }}" 
            class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
@@ -123,6 +151,52 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Portfolios -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Portfolios</h3>
+                    <a href="{{ route('admin.portfolios.index') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200">View All</a>
+                </div>
+                
+                @php
+                    $recentPortfolios = \App\Models\Portfolio::latest()->take(3)->get();
+                @endphp
+                
+                @if($recentPortfolios->count() > 0)
+                    <div class="space-y-4">
+                        @foreach($recentPortfolios as $portfolio)
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ $portfolio->title }}</h4>
+                                        <p class="text-gray-600 dark:text-gray-400">{{ $portfolio->client ?? 'No Client' }}</p>
+                                        <span class="inline-block px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full mt-2">
+                                            {{ $portfolio->tag }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        @if($portfolio->portfolio_file)
+                                            <a href="{{ route('admin.portfolios.show-file', $portfolio) }}" 
+                                               target="_blank"
+                                               class="text-purple-500 hover:text-purple-600">
+                                                <i class="fas {{ Str::contains($portfolio->file_type, 'pdf') ? 'fa-file-pdf' : 'fa-image' }}"></i>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('admin.portfolios.edit', $portfolio) }}" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-600 dark:text-gray-400">No portfolios added yet.</p>
+                @endif
+            </div>
+        </div>
+
         <!-- Recent Certificates -->
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
             <div class="p-6">

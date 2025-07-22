@@ -7,10 +7,14 @@ use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\SocialContactController;
 use App\Http\Controllers\ResumeController;
+use App\Http\Controllers\Admin\PortfolioController;
+use App\Http\Controllers\ContactController;
 
 // Public routes
 Route::view('/', 'home')->name('home');
 Route::get('/resume', [ResumeController::class, 'index'])->name('resume');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Public API route for social contacts
 Route::get('/api/social-contacts', [SocialContactController::class, 'getPublicContacts'])->name('api.social-contacts');
@@ -45,6 +49,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('social-contacts/update-order', [SocialContactController::class, 'updateOrder'])->name('social-contacts.update-order');
     Route::post('social-contacts/{socialContact}/toggle-primary', [SocialContactController::class, 'togglePrimary'])->name('social-contacts.toggle-primary');
     Route::post('social-contacts/{socialContact}/toggle-public', [SocialContactController::class, 'togglePublic'])->name('social-contacts.toggle-public');
+
+    Route::resource('portfolios', \App\Http\Controllers\Admin\PortfolioController::class);
+    Route::get('portfolios/{portfolio}/file', [\App\Http\Controllers\Admin\PortfolioController::class, 'showFile'])->name('portfolios.show-file');
 });
 
 // Regular dashboard route (no auth for now)

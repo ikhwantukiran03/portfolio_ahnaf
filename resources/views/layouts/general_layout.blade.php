@@ -102,11 +102,11 @@
             
             <!-- Navigation for Mobile -->
             <div class="space-y-4">
-                <a href="{{ route('home') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('home') ? 'bg-gray-100' : '' }}">
                     <i class="fas fa-user text-pink-custom"></i>
                     <span class="text-gray-700">About</span>
                 </a>
-                <a href="{{ route('resume') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="{{ route('resume') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('resume') ? 'bg-gray-100' : '' }}">
                     <i class="fas fa-file-alt text-gray-600"></i>
                     <span class="text-gray-700">Resume</span>
                 </a>
@@ -120,7 +120,7 @@
                     <i class="fas fa-briefcase text-gray-600"></i>
                     <span class="text-gray-700">Portfolio</span>
                 </a>
-                <a href="#contact" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="{{ route('contact') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('contact') ? 'bg-gray-100' : '' }}">
                     <i class="fas fa-paper-plane text-gray-600"></i>
                     <span class="text-gray-700">Contact</span>
                 </a>
@@ -140,8 +140,8 @@
                 <button class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-moon text-lg"></i>
                 </button>
-                <a href="{{ route('home') }}" class="hover:text-pink-custom transition-colors">
-                    <i class="fas fa-user text-lg text-pink-custom"></i>
+                <a href="{{ route('home') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('home') ? 'text-pink-custom' : '' }}">
+                    <i class="fas fa-user text-lg"></i>
                 </a>
                 <a href="{{ route('resume') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('resume') ? 'text-pink-custom' : '' }}">
                     <i class="fas fa-file-alt text-lg"></i>
@@ -154,7 +154,7 @@
                 <a href="#portfolio" class="hover:text-gray-800 transition-colors">
                     <i class="fas fa-briefcase text-lg"></i>
                 </a>
-                <a href="#contact" class="hover:text-gray-800 transition-colors">
+                <a href="{{ route('contact') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('contact') ? 'text-pink-custom' : '' }}">
                     <i class="fas fa-paper-plane text-lg"></i>
                 </a>
             </div>
@@ -208,7 +208,7 @@
                             Download CV
                         </a>
                     @endif
-                    <a href="#contact" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                    <a href="{{ route('contact') }}" class="block w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-medium">
                         Contact Me
                     </a>
                 </div>
