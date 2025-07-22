@@ -110,13 +110,7 @@
                     <i class="fas fa-file-alt text-gray-600"></i>
                     <span class="text-gray-700">Resume</span>
                 </a>
-                @if($profile && $profile->company)
-                    <a href="#company" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
-                        <i class="fas fa-building text-gray-600"></i>
-                        <span class="text-gray-700">Company</span>
-                    </a>
-                @endif
-                <a href="#portfolio" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                <a href="{{ route('portfolio') }}" class="flex items-center space-x-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors {{ request()->routeIs('portfolio') ? 'bg-gray-100' : '' }}">
                     <i class="fas fa-briefcase text-gray-600"></i>
                     <span class="text-gray-700">Portfolio</span>
                 </a>
@@ -146,12 +140,7 @@
                 <a href="{{ route('resume') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('resume') ? 'text-pink-custom' : '' }}">
                     <i class="fas fa-file-alt text-lg"></i>
                 </a>
-                @if($profile && $profile->company)
-                    <a href="#company" class="hover:text-gray-800 transition-colors">
-                        <i class="fas fa-building text-lg"></i>
-                    </a>
-                @endif
-                <a href="#portfolio" class="hover:text-gray-800 transition-colors">
+                <a href="{{ route('portfolio') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('portfolio') ? 'text-pink-custom' : '' }}">
                     <i class="fas fa-briefcase text-lg"></i>
                 </a>
                 <a href="{{ route('contact') }}" class="hover:text-pink-custom transition-colors {{ request()->routeIs('contact') ? 'text-pink-custom' : '' }}">
