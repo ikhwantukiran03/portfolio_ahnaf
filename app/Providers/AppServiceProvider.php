@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Force HTTPS in production
+        // Force HTTPS in production (Heroku-compatible)
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
