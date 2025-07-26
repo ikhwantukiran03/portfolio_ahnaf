@@ -180,13 +180,7 @@
             </div>
         </div>
 
-        <!-- Mobile Page Header -->
-        <div class="lg:hidden bg-card-white border-b border-gray-100 px-4 py-4">
-            <div class="text-center">
-                <h2 class="text-xl font-bold text-text-primary">@yield('page-title', 'Dashboard')</h2>
-                <p class="text-text-secondary text-sm mt-1">@yield('page-description', 'Manage your portfolio content')</p>
-            </div>
-        </div>
+
 
         <!-- Page Content -->
         <div class="p-4 lg:p-6">
