@@ -40,7 +40,6 @@ class SocialContactController extends Controller
             'value' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:500',
-            'is_primary' => 'boolean',
             'is_public' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
             'status' => 'required|in:active,inactive'
@@ -98,7 +97,6 @@ class SocialContactController extends Controller
             'value' => 'required|string|max:255',
             'icon' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:500',
-            'is_primary' => 'boolean',
             'is_public' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
             'status' => 'required|in:active,inactive'
@@ -163,16 +161,7 @@ class SocialContactController extends Controller
         return response()->json(['message' => 'Order updated successfully']);
     }
 
-    /**
-     * Toggle primary status
-     */
-    public function togglePrimary(SocialContact $socialContact)
-    {
-        $socialContact->update(['is_primary' => !$socialContact->is_primary]);
 
-        return redirect()->route('admin.social-contacts.index')
-            ->with('success', 'Primary status updated successfully.');
-    }
 
     /**
      * Toggle public visibility

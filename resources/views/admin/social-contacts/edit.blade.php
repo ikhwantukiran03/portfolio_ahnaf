@@ -1,37 +1,4 @@
-// Update form based on selected type
-    typeSelect.addEventListener('change', function() {
-        const selectedType = this.value;
-        const customTypeField = document.getElementById('custom-type-field');
-        
-        // Show/hide custom type field
-        if (selectedType === 'other') {
-            customTypeField.style.display = 'block';
-            document.getElementById('custom_type').required = true;
-        } else {
-            customTypeField.style.display = 'none';
-            document.getElementById('custom_type').required = false;
-        }
-        
-        if (selectedType && contactTypes[selectedType]) {
-            const typeInfo = contactTypes[selectedType];
-            
-            // Update label placeholder
-            if (selectedType === 'other') {
-                labelInput.placeholder = 'e.g., My Portfolio, Personal Blog';
-            } else {
-                labelInput.placeholder = `e.g., Work ${typeInfo.label}, Personal ${typeInfo.label}`;
-            }
-            
-            // Update value field
-            updateValueField(selectedType, typeInfo);
-            
-            // Update icon if empty
-            if (!iconInput.value) {
-                iconInput.value = typeInfo.icon;
-                iconPreview.className = typeInfo.icon;
-            }
-        }
-    });@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
