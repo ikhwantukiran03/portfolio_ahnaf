@@ -109,6 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: 150,
             ghostClass: 'bg-gray-100',
             handle: '.bg-white', // Make the entire certificate card draggable
+            delay: 1500, // 1.5 second delay before drag starts
+            delayOnTouchOnly: true, // Only apply delay on mobile/touch devices
             onEnd: function() {
                 const items = [...grid.children];
                 const order = items.map(item => item.dataset.id);

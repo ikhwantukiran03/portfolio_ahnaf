@@ -264,6 +264,8 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: 150,
             ghostClass: 'opacity-50',
             chosenClass: 'scale-105',
+            delay: 1500, // 1.5 second delay before drag starts
+            delayOnTouchOnly: true, // Only apply delay on mobile/touch devices
             onEnd: function() {
                 updateOrder('work-experiences');
             }
@@ -277,6 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: 150,
             ghostClass: 'opacity-50',
             chosenClass: 'scale-105',
+            delay: 1500, // 1.5 second delay before drag starts
+            delayOnTouchOnly: true, // Only apply delay on mobile/touch devices
             onEnd: function() {
                 updateOrder('education-experiences');
             }
