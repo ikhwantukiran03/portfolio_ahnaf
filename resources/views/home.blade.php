@@ -12,8 +12,8 @@
         <!-- Main Heading -->
         <div class="mb-8">
             <h1 class="text-4xl lg:text-6xl font-bold text-text-primary leading-tight mb-6">
-                I'M <span class="text-text-secondary font-light">{{ strtoupper($profile->name ?? 'PROFESSIONAL') }}</span>, A 
-                <span class="text-text-primary font-bold">{{ strtoupper($profile->position ?? 'DEVELOPER') }}</span>
+                I'M <span class="text-blue-500 font-bold">{{ strtoupper($profile->name ?? 'PROFESSIONAL') }}</span>, A 
+                <span class="text-blue-500 font-bold">{{ strtoupper($profile->position ?? 'DEVELOPER') }}</span>
                 
             </h1>
             
@@ -43,7 +43,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Projects Completed -->
             <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2">{{ \App\Models\Portfolio::count() }}+</div>
+                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2 hover:text-blue-500 transition-all duration-200">{{ \App\Models\Portfolio::count() }}+</div>
                 <div class="text-text-secondary font-medium">Completed Projects</div>
             </div>
 
@@ -53,13 +53,13 @@
                     $workExperiences = \App\Models\Experience::where('type', 'work')->get();
                     $yearsOfExperience = $workExperiences->count() > 0 ? $workExperiences->count() : 3;
                 @endphp
-                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2">{{ $yearsOfExperience }}+</div>
+                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2 hover:text-blue-500 transition-all duration-200">{{ $yearsOfExperience }}+</div>
                 <div class="text-text-secondary font-medium">Years Experience</div>
             </div>
 
             <!-- Certificates Earned -->
             <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2">{{ \App\Models\Certificate::where('status', 'active')->count() }}+</div>
+                <div class="text-4xl lg:text-5xl font-bold text-text-primary mb-2 hover:text-blue-500 transition-all duration-200">{{ \App\Models\Certificate::where('status', 'active')->count() }}+</div>
                 <div class="text-text-secondary font-medium">Certificates Earned</div>
             </div>
         </div>
