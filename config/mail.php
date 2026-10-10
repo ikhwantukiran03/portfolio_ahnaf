@@ -110,6 +110,14 @@ return [
     |
     */
 
+    /*
+    | Contact form recipient. Falls back to the "from" address when unset.
+    */
+
+    'contact_recipient' => [
+        'address' => env('MAIL_TO_ADDRESS'),
+    ],
+
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),

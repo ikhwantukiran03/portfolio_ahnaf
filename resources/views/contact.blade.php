@@ -109,7 +109,13 @@
             </div>
         @endif
 
-        <form action="{{ route('contact.send') }}" method="POST" class="space-y-8">
+        @error('send')
+            <div class="mb-8 p-6 bg-red-50 border border-red-200 rounded-xl">
+                <p class="font-semibold text-red-800">{{ $message }}</p>
+            </div>
+        @enderror
+
+        <form action="{{ route('contact.send') }}"method="POST" class="space-y-8">
             @csrf
             
             <!-- Name and Email Row -->
